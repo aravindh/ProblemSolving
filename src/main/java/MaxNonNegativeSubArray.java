@@ -7,27 +7,32 @@ import java.util.List;
  */
 public class MaxNonNegativeSubArray {
     public static void main(String[] args) {
-        //List<Integer> integers = Arrays.asList(1, 2, 3,-7, 20, -10);
-        ArrayList<Integer> integers = new ArrayList<Integer>(Arrays.asList(0, 0, -1, 0 ));
+        //ArrayList<Integer> integers = new ArrayList<Integer>(Arrays.asList(1, 2, 3,-7, 20, -10)); //[20]
+        //ArrayList<Integer> integers = new ArrayList<Integer>(Arrays.asList(0, 0, -1, 0 )); //return [0,0]
+        //ArrayList<Integer> integers = new ArrayList<Integer>(Arrays.asList(-1, -1, -1, -1, -1)); //[]
+        //ArrayList<Integer> integers = new ArrayList<Integer>(Arrays.asList(1,1,1,1,1)); //[1,1,1,1,1]
+        //ArrayList<Integer> integers = new ArrayList<Integer>(Arrays.asList(1967513926, 1540383426, -1303455736, -521595368)); //[1967513926 1540383426 ]
+        //ArrayList<Integer> integers = new ArrayList<Integer>(Arrays.asList(0,0)); //[]
+        ArrayList<Integer> integers = new ArrayList<Integer>(Arrays.asList(-52263)); //[]
         System.out.println(""+maxset(integers));
 
     }
 
     public static ArrayList<Integer> maxset(ArrayList<Integer> a) {
-        int prevSumStartIdx = 0;
-        int prevSumEndIdx = 0;
-        int prevSum = 0;
+        int prevSumStartIdx = -1;
+        int prevSumEndIdx = -1;
+        long prevSum = 0;
 
         int currSumStartIdx ;
         int currSumEndIdx = 0;
-        int currSum = 0;
+        long currSum = 0;
 
         currSumStartIdx = -1;
         for(int i = 0; i <a.size(); i++){
             int num = a.get(i);
 
             if( num < 0){
-                if(prevSum < currSum){
+                if(prevSum <= currSum){
                     prevSum = currSum;
                     prevSumEndIdx = currSumEndIdx;
                     prevSumStartIdx = currSumStartIdx;
@@ -39,18 +44,32 @@ public class MaxNonNegativeSubArray {
                 currSum = num + currSum;
             }
         }
-        prevSumStartIdx++;
+
         currSumStartIdx++;
         currSumEndIdx++;
-        prevSumEndIdx++;
 
-        ArrayList<Integer> prevSubList = new ArrayList<Integer>(a.subList(prevSumStartIdx, prevSumEndIdx));
-        ArrayList<Integer> integers = new ArrayList<Integer>(a.subList(currSumStartIdx, currSumEndIdx));
+
+        ArrayList<Integer> prevSubList = null;
+        if(prevSumStartIdx> prevSumEndIdx)
+            prevSubList = new ArrayList<Integer>();
+        else{
+            prevSumStartIdx++;prevSumEndIdx++;
+            prevSubList = new ArrayList<Integer>(a.subList(prevSumStartIdx, prevSumEndIdx));
+        }
+
+        ArrayList<Integer> integers = null;
+        if(currSumStartIdx > currSumEndIdx)
+            integers = new ArrayList<Integer>();
+        else{
+            integers = new ArrayList<Integer>(a.subList(currSumStartIdx, currSumEndIdx));
+        }
+        System.out.println(currSumStartIdx);
+        System.out.println(prevSumStartIdx);
         if(prevSum < currSum){
-            return prevSubList;
+            return integers;
         }else {
-            if( currSum > prevSum){
-                return integers;
+            if( prevSum > currSum){
+                return prevSubList;
             }else{
                 if(prevSubList.size() > integers.size()){
                     return prevSubList;
